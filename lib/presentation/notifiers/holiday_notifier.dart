@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:holiday_tracker/core/common/common_state.dart';
+import 'package:holiday_tracker/core/common/state/common_state.dart';
 import 'package:holiday_tracker/core/failures/failure.dart';
 import 'package:holiday_tracker/domain/entities/holiday_entity.dart';
 import 'package:holiday_tracker/infra/datasources/remote/holiday_remote_datasource.dart';
@@ -14,7 +14,10 @@ class HolidayNotifier extends StateNotifier<HolidayState> {
     state = const HolidayState.loadInProgress();
     final result = await datasource.fetchHolidays();
 
-    state = HolidayState.loadSuccess(result);
+    state = result.fold(
+      (failure) => HolidayState.loadFailure(failure),
+      (data) => HolidayState.loadSuccess(data),
+    );
   }
 }
 

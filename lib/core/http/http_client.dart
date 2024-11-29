@@ -1,7 +1,6 @@
-import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:holiday_tracker/core/failures/failure.dart';
+import 'package:holiday_tracker/core/http/interceptors/error_interceptor.dart';
 import 'package:holiday_tracker/domain/entities/holiday_entity.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
@@ -21,6 +20,16 @@ abstract class HttpClient {
 }
 
 
+final dioProvider = Provider<Dio>((ref) {
+  final dio = Dio();
+
+  dio.interceptors.add(ErrorInterceptor());
+
+  return dio;
+});
+
 final httpClientProvider = Provider(
-  (ref) => HttpClient(Dio()),
+  (ref) => HttpClient(ref.read(dioProvider)),
 );
+
+

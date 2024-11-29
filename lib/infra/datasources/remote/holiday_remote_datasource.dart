@@ -1,9 +1,11 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:holiday_tracker/core/failures/failure.dart';
 import 'package:holiday_tracker/core/http/http_client.dart';
 import 'package:holiday_tracker/domain/entities/holiday_entity.dart';
 
 abstract class HolidayRemoteDatasource {
-  Future<List<HolidayEntity>> fetchHolidays();
+  Future<Either<Failure, List<HolidayEntity>>> fetchHolidays();
 }
 
 class HolidayRemoteDatasourceImpl implements HolidayRemoteDatasource {
@@ -12,10 +14,13 @@ class HolidayRemoteDatasourceImpl implements HolidayRemoteDatasource {
   HolidayRemoteDatasourceImpl(this.client);
 
   @override
-  Future<List<HolidayEntity>> fetchHolidays() async {
-    final result = await client.getHolidays();
-
-    return result;
+  Future<Either<Failure, List<HolidayEntity>>> fetchHolidays() async {
+    try {
+      final result = await client.getHolidays();
+      return right(result);
+    } catch (e) {
+      return left(Failure.undefined);
+    }
   }
 }
 
