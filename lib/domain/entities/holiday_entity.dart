@@ -69,9 +69,19 @@ extension HolidayExtension on HolidayEntity {
     return holidayDate.difference(today).inDays;
   }
 
-  String getWeekDayName(){
+  String getWeekDayName() {
     final holidayDate = DateTime.parse(date);
     return AppPipes.weekDays[holidayDate.weekday - 1];
-    
   }
+}
+
+@immutable
+class HolidayDto {
+  final HolidayEntity holiday;
+  final bool isFavorite;
+
+  const HolidayDto({
+    required this.holiday,
+    required this.isFavorite,
+  });
 }
