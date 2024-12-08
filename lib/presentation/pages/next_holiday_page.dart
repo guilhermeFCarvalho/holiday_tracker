@@ -32,7 +32,12 @@ class NextHolidayPage extends HookConsumerWidget {
         final state = cRef.watch(holidayStateNotifierProvider);
         return state.maybeWhen(
           loadSuccess: (data) {
-            final nextHoliday = data.getNextHoliday();
+            final nextHoliday = data
+                .map(
+                  (e) => e.holiday,
+                )
+                .toList()
+                .getNextHoliday();
             return Padding(
               padding: EdgeInsets.symmetric(
                 vertical: paddingVertical + 12,
@@ -50,7 +55,7 @@ class NextHolidayPage extends HookConsumerWidget {
                             Text(
                                 "Faltam ${nextHoliday.daysUntilHoliday()} dias"),
                             Text(
-                                "Vai cair em um ${nextHoliday.getWeekDayName()}"),
+                                "nullVai cair em um ${nextHoliday.getWeekDayName()}"),
                             const SizedBox(
                               height: 20,
                             ),
@@ -59,7 +64,7 @@ class NextHolidayPage extends HookConsumerWidget {
                       : const Text("Não foi encontrado nenhum feriado próximo"),
                   ElevatedButton(
                     onPressed: () {
-                      routes.go('/holidays');
+                      routes.push('/holidays');
                     },
                     child: const Text(
                       "Ver os próximos feriados",

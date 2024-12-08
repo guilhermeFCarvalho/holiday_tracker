@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:holiday_tracker/core/failures/presentation/widgets/load_failure_widget.dart';
-import 'package:holiday_tracker/domain/entities/holiday_entity.dart';
 import 'package:holiday_tracker/presentation/notifiers/holiday_notifier.dart';
 import 'package:holiday_tracker/presentation/widgets/holiday_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -20,6 +19,7 @@ class HolidayListPage extends HookConsumerWidget {
             holidayNotifier.fetchHolidays();
           },
         );
+        return null;
       },
     );
 
@@ -38,7 +38,8 @@ class HolidayListPage extends HookConsumerWidget {
               children: data
                   .map(
                     (e) => HolidayWidget(
-                        dto: HolidayDto(holiday: e, isFavorite: false)),
+                      dto: e,
+                    ),
                   )
                   .toList(),
             ),

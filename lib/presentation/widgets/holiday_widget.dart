@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:holiday_tracker/domain/entities/holiday_entity.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:holiday_tracker/presentation/notifiers/favorites_notifier.dart';
 
-class HolidayWidget extends StatefulWidget {
+class HolidayWidget extends ConsumerWidget {
   final HolidayDto dto;
 
   const HolidayWidget({
@@ -10,36 +12,26 @@ class HolidayWidget extends StatefulWidget {
   });
 
   @override
-  State<HolidayWidget> createState() => _HolidayWidgetState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final favorites = ref.watch(favoritesStateNotifierProvider);
+    final isFavorite = favorites.contains(dto.holiday.date);
 
-class _HolidayWidgetState extends State<HolidayWidget> {
-  late bool _isFavorite;
-
-  @override
-  void initState() {
-    super.initState();
-    _isFavorite = widget.dto.isFavorite;
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(widget.dto.holiday.localName),
+        Text(dto.holiday.localName),
         const Spacer(),
-        Text(widget.dto.holiday.date),
+        Text(dto.holiday.date),
         IconButton(
           onPressed: () {
-            setState(() {
-              _isFavorite = !_isFavorite;
-            });
+            ref
+                .read(favoritesStateNotifierProvider.notifier)
+                .toggleFavorite(dto.holiday.date);
           },
           icon: Icon(
             Icons.bookmark,
-            color: _isFavorite ? Colors.yellow : null,
+            color: isFavorite ? Colors.yellow : null,
           ),
-        )
+        ),
       ],
     );
   }

@@ -4,7 +4,7 @@ import 'package:holiday_tracker/core/failures/failure.dart';
 import 'package:holiday_tracker/domain/entities/holiday_entity.dart';
 import 'package:holiday_tracker/infra/datasources/remote/holiday_remote_datasource.dart';
 
-typedef HolidayState = CommonState<Failure, List<HolidayEntity>>;
+typedef HolidayState = CommonState<Failure, List<HolidayDto>>;
 
 class HolidayNotifier extends StateNotifier<HolidayState> {
   final HolidayRemoteDatasource datasource;
