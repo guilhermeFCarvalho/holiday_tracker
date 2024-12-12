@@ -26,6 +26,7 @@ class HolidayListPage extends HookConsumerWidget {
     final devicePadding = MediaQuery.of(context).padding;
 
     return Scaffold(
+      appBar: AppBar(),
       body: Padding(
         padding: devicePadding.copyWith(
           left: 20,
