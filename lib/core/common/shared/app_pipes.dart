@@ -9,8 +9,7 @@ abstract class AppPipes {
     "Domingo",
   ];
 
-  static String getCurrentYear() {
-    final today = DateTime.now();
+  static String getCurrentYear(DateTime today) {
     if (today.isAfter(
       DateTime(
         today.year,

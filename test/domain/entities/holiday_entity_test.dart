@@ -2,8 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:holiday_tracker/domain/entities/holiday_entity.dart';
 
 void main() {
-  group('HolidayEntity', () {
-    test('should create a HolidayEntity instance from JSON', () {
+  group('HolidayEntity Tests', () {
+    test('fromJson and toJson should work correctly', () {
       final json = {
         'date': '2024-12-25',
         'localName': 'Natal',
@@ -23,33 +23,21 @@ void main() {
       expect(holiday.fixed, true);
       expect(holiday.global, true);
       expect(holiday.types, ['public']);
-    });
 
-    test('should convert HolidayEntity to JSON correctly', () {
-      const holiday = HolidayEntity(
-        date: '2024-12-25',
-        localName: 'Natal',
-        name: 'Christmas',
-        countryCode: 'BR',
-        fixed: true,
-        global: true,
-        types: ['public'],
-      );
+      final convertedJson = holiday.toJson();
 
-      final json = holiday.toJson();
-
-      expect(json['date'], '2024-12-25');
-      expect(json['localName'], 'Natal');
-      expect(json['name'], 'Christmas');
-      expect(json['countryCode'], 'BR');
-      expect(json['fixed'], true);
-      expect(json['global'], true);
-      expect(json['types'], ['public']);
+      expect(convertedJson['date'], '2024-12-25');
+      expect(convertedJson['localName'], 'Natal');
+      expect(convertedJson['name'], 'Christmas');
+      expect(convertedJson['countryCode'], 'BR');
+      expect(convertedJson['fixed'], true);
+      expect(convertedJson['global'], true);
+      expect(convertedJson['types'], ['public']);
     });
   });
 
-  group('HolidayListExtension', () {
-    test('should return the next holiday', () {
+  group('HolidayListExtension Tests', () {
+    test('getNextHoliday should return the next holiday', () {
       final holidays = [
         const HolidayDto(
           holiday: HolidayEntity(
@@ -84,8 +72,8 @@ void main() {
     });
   });
 
-  group('HolidayCheckExtension', () {
-    test('should return true if today is a holiday', () {
+  group('HolidayCheckExtension Tests', () {
+    test('isTodayHoliday should return true if today is a holiday', () {
       final holiday = HolidayEntity(
         date: DateTime.now().toIso8601String(),
         localName: 'Hoje',
@@ -99,7 +87,7 @@ void main() {
       expect(holiday.isTodayHoliday(), true);
     });
 
-    test('should return false if today is not a holiday', () {
+    test('isTodayHoliday should return false if today is not a holiday', () {
       const holiday = HolidayEntity(
         date: '2024-12-25',
         localName: 'Natal',
@@ -114,8 +102,8 @@ void main() {
     });
   });
 
-  group('HolidayExtension', () {
-    test('should return the correct number of days until the holiday', () {
+  group('HolidayExtension Tests', () {
+    test('daysUntilHoliday should return the correct number of days', () {
       const holiday = HolidayEntity(
         date: '2024-12-25',
         localName: 'Natal',
@@ -133,7 +121,7 @@ void main() {
       expect(daysUntil.inDays, holidayDate.difference(today).inDays);
     });
 
-    test('should return the correct weekday name', () {
+    test('getWeekDayName should return the correct weekday name', () {
       const holiday = HolidayEntity(
         date: '2024-12-25',
         localName: 'Natal',

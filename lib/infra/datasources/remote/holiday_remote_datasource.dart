@@ -18,7 +18,11 @@ class HolidayRemoteDatasourceImpl implements HolidayRemoteDatasource {
   @override
   Future<Either<Failure, List<HolidayDto>>> fetchHolidays() async {
     try {
-      final result = await client.getHolidays(AppPipes.getCurrentYear());
+      final result = await client.getHolidays(
+        AppPipes.getCurrentYear(
+          DateTime.now(),
+        ),
+      );
       final prefs = await SharedPreferences.getInstance();
 
       final dtos = result.map(
