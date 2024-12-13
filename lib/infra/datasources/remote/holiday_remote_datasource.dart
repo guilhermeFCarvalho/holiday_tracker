@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:holiday_tracker/core/common/shared/app_pipes.dart';
 import 'package:holiday_tracker/core/failures/failure.dart';
 import 'package:holiday_tracker/core/http/http_client.dart';
 import 'package:holiday_tracker/domain/entities/holiday_entity.dart';
@@ -17,7 +18,7 @@ class HolidayRemoteDatasourceImpl implements HolidayRemoteDatasource {
   @override
   Future<Either<Failure, List<HolidayDto>>> fetchHolidays() async {
     try {
-      final result = await client.getHolidays();
+      final result = await client.getHolidays(AppPipes.getCurrentYear());
       final prefs = await SharedPreferences.getInstance();
 
       final dtos = result.map(

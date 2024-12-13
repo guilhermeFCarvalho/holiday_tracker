@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoadFailureWidget extends StatelessWidget {
-  final void Function()? reload;
+  final void Function() reload;
   const LoadFailureWidget({
     super.key,
     required this.reload,
@@ -14,7 +14,9 @@ class LoadFailureWidget extends StatelessWidget {
       children: [
         const Text("Ocorreu um erro, tente novamente"),
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            reload();
+          },
           child: const Text("Recarregar"),
         )
       ],

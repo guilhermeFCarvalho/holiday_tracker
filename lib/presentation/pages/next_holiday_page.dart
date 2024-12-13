@@ -6,8 +6,10 @@ import 'package:holiday_tracker/core/native/native_service.dart';
 import 'package:holiday_tracker/core/routes/routes.dart';
 import 'package:holiday_tracker/presentation/notifiers/holiday_notifier.dart';
 import 'package:holiday_tracker/presentation/widgets/change_theme_widget.dart';
+import 'package:holiday_tracker/presentation/widgets/holiday_info_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:holiday_tracker/domain/entities/holiday_entity.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class NextHolidayPage extends HookConsumerWidget {
   const NextHolidayPage({super.key});
@@ -18,18 +20,36 @@ class NextHolidayPage extends HookConsumerWidget {
 
     final themeNotifier = ref.read(themeStateNotifierProvider.notifier);
 
-     final NativeService nativeService = NativeService();
+    final NativeService nativeService = NativeService();
 
     useEffect(
       () {
         WidgetsBinding.instance.addPostFrameCallback(
           (_) {
             holidayNotifier.fetchHolidays();
-             nativeService.showNotification("ATENÇÃO", "hoje é feriado!");
           },
         );
 
         return null;
+      },
+    );
+
+    ref.listen<HolidayState>(
+      holidayStateNotifierProvider,
+      (_, next) {
+        next.whenOrNull(
+          loadSuccess: (data) async {
+            final nextHoliday = data.getNextHoliday();
+            await Permission.notification.onGrantedCallback(
+              () {
+                if (nextHoliday != null && nextHoliday.isTodayHoliday()) {
+                  nativeService.showNotification("Hoje é feriado",
+                      "Aproveite, é ${nextHoliday.localName}!");
+                }
+              },
+            ).request();
+          },
+        );
       },
     );
 
@@ -46,12 +66,7 @@ class NextHolidayPage extends HookConsumerWidget {
         final state = cRef.watch(holidayStateNotifierProvider);
         return state.maybeWhen(
           loadSuccess: (data) {
-            final nextHoliday = data
-                .map(
-                  (e) => e.holiday,
-                )
-                .toList()
-                .getNextHoliday();
+            final nextHoliday = data.getNextHoliday();
             return Padding(
               padding: EdgeInsets.symmetric(
                 vertical: paddingVertical + 12,
@@ -62,27 +77,29 @@ class NextHolidayPage extends HookConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  nextHoliday != null
-                      ? Column(
-                          children: [
-                            Text(
-                                "O próximo feriado é ${nextHoliday.localName}"),
-                            Text(
-                                "Faltam ${nextHoliday.daysUntilHoliday()} dias"),
-                            Text(
-                                "Vai cair em um ${nextHoliday.getWeekDayName()}"),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                          ],
-                        )
-                      : const Text("Não foi encontrado nenhum feriado próximo"),
+                  if (nextHoliday != null) ...[
+                    HolidayInfoWidget(
+                      localName: nextHoliday.localName,
+                      daysUntil: nextHoliday.daysUntilHoliday().inDays,
+                      weekDayName: nextHoliday.getWeekDayName(),
+                    )
+                  ] else ...[
+                    const Center(
+                      child: Text(
+                          "Não foi encontrado mais nenhum feriado para esse ano"),
+                    )
+                  ],
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onSecondary,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.secondary),
                     onPressed: () {
                       routes.push('/holidays');
                     },
                     child: const Text(
-                      "Ver os próximos feriados",
+                      "Ver todos os feriados",
                     ),
                   ),
                 ],

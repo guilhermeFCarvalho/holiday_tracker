@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:holiday_tracker/core/common/themes/theme_notifier.dart';
 import 'package:holiday_tracker/core/common/themes/themes.dart';
 import 'package:holiday_tracker/core/routes/routes.dart';

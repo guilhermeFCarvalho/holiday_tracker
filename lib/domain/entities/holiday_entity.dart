@@ -41,32 +41,52 @@ class HolidayEntity extends Equatable {
       ];
 }
 
-extension HolidayListExtension on List<HolidayEntity> {
+extension HolidayListExtension on List<HolidayDto> {
   HolidayEntity? getNextHoliday() {
     final today = DateTime.now();
 
     sort((a, b) {
-      final dateA = DateTime.parse(a.date);
-      final dateB = DateTime.parse(b.date);
+      final dateA = DateTime.parse(a.holiday.date);
+      final dateB = DateTime.parse(b.holiday.date);
       return dateA.compareTo(dateB);
     });
 
-    for (final holiday in this) {
-      final holidayDate = DateTime.parse(holiday.date);
-      if (holidayDate.isAfter(today)) {
-        return holiday;
+    for (final dto in this) {
+      final holidayDate = DateTime.parse(dto.holiday.date);
+
+      if (DateTime(
+        holidayDate.year,
+        holidayDate.month,
+        holidayDate.day,
+        23,
+        59,
+      ).isAfter(
+        today,
+      )) {
+        return dto.holiday;
       }
     }
     return null;
   }
 }
 
-extension HolidayExtension on HolidayEntity {
-  int daysUntilHoliday() {
+extension HolidayCheckExtension on HolidayEntity {
+  bool isTodayHoliday() {
     final holidayDate = DateTime.parse(date);
     final today = DateTime.now();
 
-    return holidayDate.difference(today).inDays;
+    return holidayDate.year == today.year &&
+        holidayDate.month == today.month &&
+        holidayDate.day == today.day;
+  }
+}
+
+extension HolidayExtension on HolidayEntity {
+  Duration daysUntilHoliday() {
+    final holidayDate = DateTime.parse(date);
+    final today = DateTime.now();
+
+    return holidayDate.difference(today);
   }
 
   String getWeekDayName() {

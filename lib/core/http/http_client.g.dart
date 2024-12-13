@@ -14,7 +14,7 @@ class _HttpClient implements HttpClient {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://date.nager.at/api/v3';
+    baseUrl ??= 'https://date.nager.at/api/v3/PublicHolidays';
   }
 
   final Dio _dio;
@@ -24,7 +24,7 @@ class _HttpClient implements HttpClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<HolidayEntity>> getHolidays() async {
+  Future<List<HolidayEntity>> getHolidays(String countryCode) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -36,7 +36,7 @@ class _HttpClient implements HttpClient {
     )
         .compose(
           _dio.options,
-          '/PublicHolidays/2024/BR',
+          '/${countryCode}/BR',
           queryParameters: queryParameters,
           data: _data,
         )

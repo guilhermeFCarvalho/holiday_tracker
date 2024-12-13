@@ -7,7 +7,7 @@ import 'package:retrofit/http.dart';
 
 part 'http_client.g.dart';
 
-@RestApi(baseUrl: "https://date.nager.at/api/v3")
+@RestApi(baseUrl: "https://date.nager.at/api/v3/PublicHolidays")
 abstract class HttpClient {
   factory HttpClient(
     Dio dio, {
@@ -15,10 +15,10 @@ abstract class HttpClient {
     ParseErrorLogger? errorLogger,
   }) = _HttpClient;
 
-  @GET('/PublicHolidays/2024/BR')
-  Future<List<HolidayEntity>> getHolidays();
+  @GET('/{currentYear}/BR')
+  Future<List<HolidayEntity>> getHolidays(
+      @Path("currentYear") String countryCode);
 }
-
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio();
@@ -31,5 +31,3 @@ final dioProvider = Provider<Dio>((ref) {
 final httpClientProvider = Provider(
   (ref) => HttpClient(ref.read(dioProvider)),
 );
-
-
