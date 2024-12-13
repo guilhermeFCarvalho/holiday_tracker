@@ -11,6 +11,15 @@ class HolidayWidget extends ConsumerWidget {
     required this.dto,
   });
 
+  String formatDate(String isoDate) {
+    DateTime date = DateTime.parse(isoDate);
+
+    String formattedDate =
+        "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+
+    return formattedDate;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final favorites = ref.watch(favoritesStateNotifierProvider);
@@ -20,7 +29,9 @@ class HolidayWidget extends ConsumerWidget {
       children: [
         Text(dto.holiday.localName),
         const Spacer(),
-        Text(dto.holiday.date),
+        Text(
+          formatDate(dto.holiday.date),
+        ),
         IconButton(
           onPressed: () {
             ref

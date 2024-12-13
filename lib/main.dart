@@ -16,6 +16,7 @@ class MainApp extends HookConsumerWidget {
     final themeNotifier = ref.watch(themeStateNotifierProvider);
 
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeNotifier,
